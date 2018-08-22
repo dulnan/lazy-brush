@@ -18,6 +18,7 @@ class LazyBrush {
 
     this.angle = 0
     this.distance = 0
+    this._hasMoved = false
   }
 
   /**
@@ -78,7 +79,7 @@ class LazyBrush {
    * @returns {LazyPoint}
    */
   getBrush () {
-    return new LazyPoint(this.brush)
+    return this.brush
   }
 
   /**
@@ -87,7 +88,7 @@ class LazyBrush {
    * @returns {LazyPoint}
    */
   getPointer () {
-    return new LazyPoin(this.pointer)
+    return this.pointer
   }
 
   /**
@@ -108,6 +109,10 @@ class LazyBrush {
     return this.distance
   }
 
+  hasMoved () {
+    return this._hasMoved
+  }
+
   /**
    * Updates the pointer point and calculates the new brush point.
    *
@@ -115,6 +120,7 @@ class LazyBrush {
    * @returns {boolean} Whether any of the two points changed
    */
   update (newPointerPoint) {
+    this._hasMoved = false
     if (this.pointer.equalsTo(newPointerPoint)) {
       return false
     }
@@ -127,6 +133,7 @@ class LazyBrush {
 
       if (this.distance > this.radius) {
         this.brush.moveByAngle(this.angle, this.distance - this.radius)
+        this._hasMoved = true
       }
     } else {
       this.distance = 0
