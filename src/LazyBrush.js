@@ -1,6 +1,6 @@
 import LazyPoint from './LazyPoint'
 
-const RADIUS_DEFAULT = 30
+import { RADIUS_DEFAULT } from './settings'
 
 class LazyBrush {
   /**
@@ -9,21 +9,28 @@ class LazyBrush {
    * @param {number} radius The radius of the lazy area
    * @param {boolean} {enabled}
    */
-  constructor (radius, { enabled = true } = {}) {
+  constructor ({ radius = RADIUS_DEFAULT, enabled = true } = {}) {
     this.mouse = new LazyPoint(0, 0)
     this.brush = new LazyPoint(0, 0)
 
-    this.radius = radius || RADIUS_DEFAULT
-
-    this.isDisabled = !enabled
+    this.radius = radius
+    this.isEnabled = enabled
   }
 
+  /**
+   * Enable lazy brush calculations.
+   *
+   */
   enable () {
-    this.isDisabled = false
+    this.isEnabled = true
   }
 
+  /**
+   * Disable lazy brush calculations.
+   *
+   */
   disable () {
-    this.isDisabled = true
+    this.isEnabled = false
   }
 
   /**
@@ -39,27 +46,27 @@ class LazyBrush {
    * Updates the mouse point and calculates the new brush point.
    *
    * @param {Point} newMousePoint
+   * @returns {boolean} Whether any of the two points changed
    */
-  update (newMousePoint, cb) {
+  update (newMousePoint) {
     if (this.mouse.equalsTo(newMousePoint) || this.brush.equalsTo(newMousePoint)) {
-      cb.call(null, false)
-      return
+      return false
     }
 
     this.mouse.update(newMousePoint)
 
-    if (this.isDisabled) {
-      this.brush.update(newMousePoint)
-    } else {
+    if (this.isEnabled) {
       const distance = this.mouse.getDistanceTo(this.brush)
 
       if (distance > this.radius) {
         const angle = this.mouse.getAngleTo(this.brush)
         this.brush.moveByAngle(angle, distance - this.radius)
       }
+    } else {
+      this.brush.update(newMousePoint)
     }
 
-    cb.call(null, true)
+    return true
   }
 }
 

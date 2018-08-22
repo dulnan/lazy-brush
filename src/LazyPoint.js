@@ -27,12 +27,15 @@ class LazyPoint extends Point {
    * @param {number} distance How much the point should be moved
    */
   moveByAngle (angle, distance) {
-    this.x = this.x + (Math.cos(angle) * distance)
-    this.y = this.y + (Math.sin(angle) * distance)
+    // Rotate the angle based on the browser coordinate system ([0,0] in the top left)
+    const angleRotated = angle + (Math.PI / 2)
+
+    this.x = Math.round(this.x + (Math.sin(angleRotated) * distance))
+    this.y = Math.round(this.y - (Math.cos(angleRotated) * distance))
   }
 
   /**
-   * equalsTo
+   * Check if this point is the same as another point
    *
    * @param {Point} point
    * @returns {boolean}
@@ -51,18 +54,35 @@ class LazyPoint extends Point {
     return new Point(this.x - point.x, this.y - point.y)
   }
 
+  /**
+   * Calculate distance to another point
+   *
+   * @param {Point} point
+   * @returns {Point}
+   */
   getDistanceTo (point) {
     const diff = this.getDifferenceTo(point)
 
     return Math.sqrt(Math.pow(diff.x, 2) + Math.pow(diff.y, 2))
   }
 
+  /**
+   * Calculate the angle to another point
+   *
+   * @param {Point} point
+   * @returns {Point}
+   */
   getAngleTo (point) {
     const diff = this.getDifferenceTo(point)
 
     return Math.atan2(diff.y, diff.x)
   }
 
+  /**
+   * Return a simple object with x and y properties
+   *
+   * @returns {object}
+   */
   toObject () {
     return {
       x: this.x,
