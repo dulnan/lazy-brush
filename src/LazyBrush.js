@@ -10,11 +10,14 @@ class LazyBrush {
    * @param {boolean} settings.enabled
    */
   constructor ({ radius = RADIUS_DEFAULT, enabled = true } = {}) {
+    this.radius = radius
+    this.isEnabled = enabled
+
     this.pointer = new LazyPoint(0, 0)
     this.brush = new LazyPoint(0, 0)
 
-    this.radius = radius
-    this.isEnabled = enabled
+    this.angle = 0
+    this.distance = 0
   }
 
   /**
@@ -88,26 +91,46 @@ class LazyBrush {
   }
 
   /**
+   * Return the angle between pointer and brush
+   *
+   * @returns {number} Angle in radians
+   */
+  getAngle () {
+    return this.angle
+  }
+
+  /**
+   * Return the distance between pointer and brush
+   *
+   * @returns {number} Distance in pixels
+   */
+  getDistance () {
+    return this.distance
+  }
+
+  /**
    * Updates the pointer point and calculates the new brush point.
    *
    * @param {Point} newPointerPoint
    * @returns {boolean} Whether any of the two points changed
    */
   update (newPointerPoint) {
-    if (this.pointer.equalsTo(newPointerPoint) || this.brush.equalsTo(newPointerPoint)) {
+    if (this.pointer.equalsTo(newPointerPoint)) {
       return false
     }
 
     this.pointer.update(newPointerPoint)
 
     if (this.isEnabled) {
-      const distance = this.pointer.getDistanceTo(this.brush)
+      this.distance = this.pointer.getDistanceTo(this.brush)
+      this.angle = this.pointer.getAngleTo(this.brush)
 
-      if (distance > this.radius) {
-        const angle = this.pointer.getAngleTo(this.brush)
-        this.brush.moveByAngle(angle, distance - this.radius)
+      if (this.distance > this.radius) {
+        this.brush.moveByAngle(this.angle, this.distance - this.radius)
       }
     } else {
+      this.distance = 0
+      this.angle = 0
       this.brush.update(newPointerPoint)
     }
 

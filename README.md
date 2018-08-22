@@ -26,5 +26,6 @@ This can be used to prevent unneccessary canvas redrawing.
 To get the coordinates for the brush, use `LazyBrush.getBrush()` or `LazyBrush.getPointer()`. This will return an object with x and y properties. Directly accessing `pointer` or `brush` 
 
 ## Performance
-For performance reasons it's best to decouple calculations and canvas rendering from pointermove events: Store the pointer coordinates in a variable in this event.
-Using an animation loop (typically requestAnimationFrame), call the Lazybrush.update() function on every frame. Because the 
+For performance reasons it's best to decouple calculations and canvas rendering from mousemove/touchmove events: One way is to store the current coordinates in a variable.
+Then, using an animation loop (typically requestAnimationFrame), call the Lazybrush.update() function on every frame with the latest coordinates from the variable.
+The library will only do calculations if the pointer or brush values changed.
