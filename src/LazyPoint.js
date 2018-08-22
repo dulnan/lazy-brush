@@ -2,15 +2,6 @@ import Point from './Point'
 
 class LazyPoint extends Point {
   /**
-   *
-   * @param {number} x
-   * @param {number} y
-   */
-  constructor(x, y) {
-    super(x, y)
-  }
-
-  /**
    * Update the x and y values
    *
    * @param {Point} point

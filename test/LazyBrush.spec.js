@@ -9,8 +9,8 @@ describe('LazyBrush', () => {
   it('Should be instantiatable with a radius and options', () => {
     const b = new LazyBrush({ radius: 100, enabled: false })
 
-    b.mouse.x.should.equal(0)
-    b.mouse.y.should.equal(0)
+    b.pointer.x.should.equal(0)
+    b.pointer.y.should.equal(0)
     b.brush.x.should.equal(0)
     b.brush.y.should.equal(0)
 
@@ -51,13 +51,13 @@ describe('LazyBrush', () => {
     b.radius.should.equal(156)
   })
 
-  it('Should update mouse points corrently', () => {
+  it('Should update pointer points corrently', () => {
     const b = new LazyBrush({ radius: 100 })
 
     b.update({ x: 500, y: 1000 })
 
-    b.mouse.x.should.equal(500)
-    b.mouse.y.should.equal(1000)
+    b.pointer.x.should.equal(500)
+    b.pointer.y.should.equal(1000)
   })
 
   it('Should detect changes corectly', () => {
@@ -70,7 +70,7 @@ describe('LazyBrush', () => {
     hasChanged2.should.equal(false)
   })
 
-  it('Should not move brush when mouse is inside radius', () => {
+  it('Should not move brush when pointer is inside radius', () => {
     const b = new LazyBrush({ radius: 100 })
 
     b.update({ x: 10, y: 10 })
@@ -79,7 +79,7 @@ describe('LazyBrush', () => {
     b.brush.y.should.equal(0)
   })
 
-  it('Should move brush when mouse is outside radius on the right', () => {
+  it('Should move brush when pointer is outside radius on the right', () => {
     const b = new LazyBrush({ radius: 100 })
 
     b.update({ x: 100, y: 0})
@@ -89,7 +89,7 @@ describe('LazyBrush', () => {
     b.brush.y.should.equal(0)
   })
 
-  it('Should move brush when mouse is outside radius on the left', () => {
+  it('Should move brush when pointer is outside radius on the left', () => {
     const b = new LazyBrush({ radius: 100 })
 
     b.update({ x: 500, y: 0})
@@ -105,7 +105,7 @@ describe('LazyBrush', () => {
     b.brush.x.should.equal(200)
   })
 
-  it('Should move brush when mouse is outside radius the bottom right', () => {
+  it('Should move brush when pointer is outside radius the bottom right', () => {
     const b = new LazyBrush({ radius: 100 })
 
     b.update({ x: 1071, y: 1071})
