@@ -21,8 +21,8 @@ class LazyPoint extends Point {
     // Rotate the angle based on the browser coordinate system ([0,0] in the top left)
     const angleRotated = angle + (Math.PI / 2)
 
-    this.x = Math.round(this.x + (Math.sin(angleRotated) * distance))
-    this.y = Math.round(this.y - (Math.cos(angleRotated) * distance))
+    this.x = this.x + (Math.sin(angleRotated) * distance),
+    this.y = this.y - (Math.cos(angleRotated) * distance)
   }
 
   /**
