@@ -11,7 +11,7 @@ class LazyBrush {
    */
   constructor ({ radius = RADIUS_DEFAULT, enabled = true } = {}) {
     this.radius = radius
-    this.isEnabled = enabled
+    this._isEnabled = enabled
 
     this.pointer = new LazyPoint(0, 0)
     this.brush = new LazyPoint(0, 0)
@@ -26,7 +26,7 @@ class LazyBrush {
    *
    */
   enable () {
-    this.isEnabled = true
+    this._isEnabled = true
   }
 
   /**
@@ -34,7 +34,11 @@ class LazyBrush {
    *
    */
   disable () {
-    this.isEnabled = false
+    this._isEnabled = false
+  }
+
+  isEnabled () {
+    return this._isEnabled
   }
 
   /**
@@ -127,7 +131,7 @@ class LazyBrush {
 
     this.pointer.update(newPointerPoint)
 
-    if (this.isEnabled) {
+    if (this._isEnabled) {
       this.distance = this.pointer.getDistanceTo(this.brush)
       this.angle = this.pointer.getAngleTo(this.brush)
 
