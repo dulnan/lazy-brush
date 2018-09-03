@@ -1,4 +1,4 @@
-# LazyBrush - smooth drawing with a pointer or any pointing device
+# LazyBrush - smooth drawing with a mouse or any pointing device
 
 [Demo](https://dulnan.net/var/lazybrush/)
 
