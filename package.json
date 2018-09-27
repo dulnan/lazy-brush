@@ -22,7 +22,8 @@
     "build": "babel src --presets babel-preset-env --out-dir lib",
     "test": "mocha --require babel-register --colors",
     "dev": "echo \"Error: no dev stuff specifried\" && exit 1",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "prepare": "npm run build"
   },
   "author": "Jan Hug <me@dulnan.net>",
   "license": "MIT",

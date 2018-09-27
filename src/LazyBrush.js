@@ -9,12 +9,12 @@ class LazyBrush {
    * @param {number} settings.radius The radius for the lazy area
    * @param {boolean} settings.enabled
    */
-  constructor ({ radius = RADIUS_DEFAULT, enabled = true } = {}) {
+  constructor ({ radius = RADIUS_DEFAULT, enabled = true, initialPoint = { x: 0, y: 0 }} = {}) {
     this.radius = radius
     this._isEnabled = enabled
 
-    this.pointer = new LazyPoint(0, 0)
-    this.brush = new LazyPoint(0, 0)
+    this.pointer = new LazyPoint(initialPoint.x, initialPoint.y)
+    this.brush = new LazyPoint(initialPoint.x, initialPoint.y)
 
     this.angle = 0
     this.distance = 0
@@ -131,13 +131,18 @@ class LazyBrush {
    * @param {Point} newPointerPoint
    * @returns {boolean} Whether any of the two points changed
    */
-  update (newPointerPoint) {
+  update (newPointerPoint, { both = false } = {}) {
     this._hasMoved = false
-    if (this.pointer.equalsTo(newPointerPoint)) {
+    if (this.pointer.equalsTo(newPointerPoint) && !both) {
       return false
     }
 
     this.pointer.update(newPointerPoint)
+
+    if (both) {
+      this.brush.update(newPointerPoint)
+      return true
+    }
 
     if (this._isEnabled) {
       this.distance = this.pointer.getDistanceTo(this.brush)

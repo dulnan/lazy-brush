@@ -1,5 +1,7 @@
 # LazyBrush - smooth drawing with a mouse, finger or any pointing device
 
+[Demo](https://dulnan.net/var/lazybrush/)
+
 This library provides the math required to implement a so called "lazy brush".
 It takes a radius and the {x,y} coordinates of a mouse/pointer and calculates
 the position of the brush.
