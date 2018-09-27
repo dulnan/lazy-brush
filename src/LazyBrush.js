@@ -1,5 +1,5 @@
 import LazyPoint from './LazyPoint'
-import { RADIUS_DEFAULT } from './settings'
+const RADIUS_DEFAULT = 30
 
 class LazyBrush {
   /**
@@ -37,6 +37,9 @@ class LazyBrush {
     this._isEnabled = false
   }
 
+  /**
+   * @returns {boolean}
+   */
   isEnabled () {
     return this._isEnabled
   }
@@ -113,7 +116,12 @@ class LazyBrush {
     return this.distance
   }
 
-  hasMoved () {
+  /**
+   * Return if the previous update has moved the brush.
+   *
+   * @returns {boolean} Whether the brush moved previously.
+   */
+  brushHasMoved () {
     return this._hasMoved
   }
 
@@ -143,6 +151,7 @@ class LazyBrush {
       this.distance = 0
       this.angle = 0
       this.brush.update(newPointerPoint)
+      this._hasMoved = true
     }
 
     return true
@@ -150,3 +159,4 @@ class LazyBrush {
 }
 
 export default LazyBrush
+

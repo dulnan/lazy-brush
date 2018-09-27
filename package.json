@@ -1,14 +1,18 @@
 {
   "name": "lazy-brush",
-  "version": "0.0.1",
-  "description": "Lazy brush library that allows for smooth drawing using the mouse.",
+  "version": "1.0.0",
+  "description": "Lazy brush - smooth drawing using mouse or finger",
   "main": "lib/index.js",
   "keywords": [
     "brush",
     "mouse",
     "lazy",
     "canvas",
-    "drawing"
+    "drawing",
+    "smooth",
+    "pencil",
+    "string",
+    "radius"
   ],
   "repository": "https://github.com/dulnan/lazy-brush",
   "directories": {
