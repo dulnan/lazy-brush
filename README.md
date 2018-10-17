@@ -1,6 +1,7 @@
-# LazyBrush - smooth drawing with a mouse, finger or any pointing device
+# lazy-brush - smooth drawing with a mouse, finger or any pointing device
 
-[Demo drawing app](https://lazybrush.dulnan.net)
+**[Demo drawing app](https://lazybrush.dulnan.net)**
+
 [Example repository](https://github.com/dulnan/lazy-brush-demo)
 
 This library provides the math required to implement a "lazy brush".
