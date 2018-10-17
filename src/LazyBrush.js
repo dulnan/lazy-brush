@@ -129,7 +129,9 @@ class LazyBrush {
    * Updates the pointer point and calculates the new brush point.
    *
    * @param {Point} newPointerPoint
-   * @returns {boolean} Whether any of the two points changed
+   * @param {Object} options
+   * @param {Boolean} options.both Force update pointer and brush
+   * @returns {Boolean} Whether any of the two points changed
    */
   update (newPointerPoint, { both = false } = {}) {
     this._hasMoved = false
@@ -140,6 +142,7 @@ class LazyBrush {
     this.pointer.update(newPointerPoint)
 
     if (both) {
+      this._hasMoved = true
       this.brush.update(newPointerPoint)
       return true
     }

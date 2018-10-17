@@ -1,8 +1,9 @@
 # LazyBrush - smooth drawing with a mouse, finger or any pointing device
 
-[Demo](https://dulnan.net/var/lazybrush/)
+[Demo drawing app](https://lazybrush.dulnan.net)
+[Example repository](https://github.com/dulnan/lazy-brush-demo)
 
-This library provides the math required to implement a so called "lazy brush".
+This library provides the math required to implement a "lazy brush".
 It takes a radius and the {x,y} coordinates of a mouse/pointer and calculates
 the position of the brush.
 The brush will only move when the pointer is outside the "lazy area" of the
@@ -19,7 +20,11 @@ LazyBrush can be easily added in any canvas drawing scenario. It acts like a
 "proxy" between user input and drawing.
 
 ```javascript
-const lazy = new LazyBrush({ radius: 30, enabled: true }) // default
+const lazy = new LazyBrush({
+  radius: 30,
+  enabled: true,
+  initialPoint: { x: 0, y: 0 }
+}) // default
 
 lazy.update({ x: 50, y: 0 })
 console.log(lazy.getBrushCoordinates()) // { x: 0, y: 0 }
