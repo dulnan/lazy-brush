@@ -17,7 +17,9 @@ calculated. If this distance is larger than the defined radius, the brush will
 be moved by `distance - radius` pixels in the direction where the pointer is.
 
 # Usage
-LazyBrush can be easily added in any canvas drawing scenario. It acts like a
+lazy-brush is on npm so you can install it with your favorite package manager.
+
+lazy-brush can be easily added in any canvas drawing scenario. It acts like a
 "proxy" between user input and drawing.
 
 ```javascript
