@@ -1,17 +1,34 @@
 import LazyPoint from './LazyPoint'
+import Point from './Point'
+
 const RADIUS_DEFAULT = 30
 
+interface LazyBrushOptions {
+  radius?: number
+  enabled?: boolean
+  initialPoint?: Point
+}
+
+interface LazyBrushUpdateOptions {
+  both?: boolean
+}
+
 class LazyBrush {
+  _isEnabled: boolean
+  _hasMoved: boolean
+  radius: number
+  pointer: LazyPoint
+  brush: LazyPoint
+  angle: number
+  distance: number
+
   /**
    * constructor
-   *
-   * @param {object} settings
-   * @param {number} settings.radius The radius for the lazy area
-   * @param {boolean} settings.enabled
    */
-  constructor ({ radius = RADIUS_DEFAULT, enabled = true, initialPoint = { x: 0, y: 0 }} = {}) {
-    this.radius = radius
-    this._isEnabled = enabled
+  constructor(options: LazyBrushOptions) {
+    const initialPoint = options.initialPoint || { x: 0, y: 0 }
+    this.radius = options.radius || RADIUS_DEFAULT
+    this._isEnabled = options.enabled === true ? true : false
 
     this.pointer = new LazyPoint(initialPoint.x, initialPoint.y)
     this.brush = new LazyPoint(initialPoint.x, initialPoint.y)
@@ -25,7 +42,7 @@ class LazyBrush {
    * Enable lazy brush calculations.
    *
    */
-  enable () {
+  enable(): void {
     this._isEnabled = true
   }
 
@@ -33,14 +50,14 @@ class LazyBrush {
    * Disable lazy brush calculations.
    *
    */
-  disable () {
+  disable(): void {
     this._isEnabled = false
   }
 
   /**
    * @returns {boolean}
    */
-  isEnabled () {
+  isEnabled(): boolean {
     return this._isEnabled
   }
 
@@ -49,7 +66,7 @@ class LazyBrush {
    *
    * @param {number} radius
    */
-  setRadius (radius) {
+  setRadius(radius: number): void {
     this.radius = radius
   }
 
@@ -58,7 +75,7 @@ class LazyBrush {
    *
    * @returns {number}
    */
-  getRadius () {
+  getRadius(): number {
     return this.radius
   }
 
@@ -67,7 +84,7 @@ class LazyBrush {
    *
    * @returns {object}
    */
-  getBrushCoordinates () {
+  getBrushCoordinates(): Point {
     return this.brush.toObject()
   }
 
@@ -76,7 +93,7 @@ class LazyBrush {
    *
    * @returns {object}
    */
-  getPointerCoordinates () {
+  getPointerCoordinates(): Point {
     return this.pointer.toObject()
   }
 
@@ -85,7 +102,7 @@ class LazyBrush {
    *
    * @returns {LazyPoint}
    */
-  getBrush () {
+  getBrush(): LazyPoint {
     return this.brush
   }
 
@@ -94,7 +111,7 @@ class LazyBrush {
    *
    * @returns {LazyPoint}
    */
-  getPointer () {
+  getPointer(): LazyPoint {
     return this.pointer
   }
 
@@ -103,7 +120,7 @@ class LazyBrush {
    *
    * @returns {number} Angle in radians
    */
-  getAngle () {
+  getAngle(): number {
     return this.angle
   }
 
@@ -112,7 +129,7 @@ class LazyBrush {
    *
    * @returns {number} Distance in pixels
    */
-  getDistance () {
+  getDistance(): number {
     return this.distance
   }
 
@@ -121,19 +138,17 @@ class LazyBrush {
    *
    * @returns {boolean} Whether the brush moved previously.
    */
-  brushHasMoved () {
+  brushHasMoved(): boolean {
     return this._hasMoved
   }
 
   /**
    * Updates the pointer point and calculates the new brush point.
-   *
-   * @param {Point} newPointerPoint
-   * @param {Object} options
-   * @param {Boolean} options.both Force update pointer and brush
-   * @returns {Boolean} Whether any of the two points changed
    */
-  update (newPointerPoint, { both = false } = {}) {
+  update(
+    newPointerPoint: Point,
+    { both = false }: LazyBrushUpdateOptions = {}
+  ): boolean {
     this._hasMoved = false
     if (this.pointer.equalsTo(newPointerPoint) && !both) {
       return false
@@ -167,4 +182,3 @@ class LazyBrush {
 }
 
 export default LazyBrush
-
