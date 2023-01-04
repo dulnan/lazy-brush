@@ -1,35 +1,45 @@
-import Point from './Point'
+interface Point {
+  x: number
+  y: number
+}
 
-export default class LazyPoint extends Point {
+export default class LazyPoint implements Point {
+  x: number
+  y: number
+
+  constructor(x: number, y: number) {
+    this.x = x
+    this.y = y
+  }
+
   /**
    * Update the x and y values
-   *
-   * @param {Point} point
    */
-  update(point: Point) {
+  update(point: Point): LazyPoint {
     this.x = point.x
     this.y = point.y
+    return this
   }
 
   /**
    * Move the point to another position using an angle and distance
-   *
-   * @param {number} angle The angle in radians
-   * @param {number} distance How much the point should be moved
    */
-  moveByAngle(angle: number, distance: number) {
+  moveByAngle(
+    // The angle in radians
+    angle: number,
+    // How much the point should be moved
+    distance: number
+  ): LazyPoint {
     // Rotate the angle based on the browser coordinate system ([0,0] in the top left)
     const angleRotated = angle + Math.PI / 2
 
-    ;(this.x = this.x + Math.sin(angleRotated) * distance),
-      (this.y = this.y - Math.cos(angleRotated) * distance)
+    this.x = this.x + Math.sin(angleRotated) * distance
+    this.y = this.y - Math.cos(angleRotated) * distance
+    return this
   }
 
   /**
    * Check if this point is the same as another point
-   *
-   * @param {Point} point
-   * @returns {boolean}
    */
   equalsTo(point: Point): boolean {
     return this.x === point.x && this.y === point.y
@@ -37,19 +47,13 @@ export default class LazyPoint extends Point {
 
   /**
    * Get the difference for x and y axis to another point
-   *
-   * @param {Point} point
-   * @returns {Point}
    */
-  getDifferenceTo(point: Point): Point {
-    return new Point(this.x - point.x, this.y - point.y)
+  getDifferenceTo(point: Point): LazyPoint {
+    return new LazyPoint(this.x - point.x, this.y - point.y)
   }
 
   /**
    * Calculate distance to another point
-   *
-   * @param {Point} point
-   * @returns {number}
    */
   getDistanceTo(point: Point): number {
     const diff = this.getDifferenceTo(point)
@@ -59,9 +63,6 @@ export default class LazyPoint extends Point {
 
   /**
    * Calculate the angle to another point
-   *
-   * @param {Point} point
-   * @returns {number}
    */
   getAngleTo(point: Point): number {
     const diff = this.getDifferenceTo(point)
@@ -71,8 +72,6 @@ export default class LazyPoint extends Point {
 
   /**
    * Return a simple object with x and y properties
-   *
-   * @returns {object}
    */
   toObject(): Point {
     return {
