@@ -1,0 +1,290 @@
+@use 'sass:math';
+@import 'variables';
+@import 'range';
+
+$weight-bold: 900;
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: math.div(25, 16) * 100%;
+  line-height: 1;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  font-size: math.div(16, 25) * 1rem;
+  font-family: 'Heebo', sans-serif;
+  padding: 0;
+  color: $color-black;
+  background-color: $color-white;
+  user-select: none;
+}
+
+* {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+.button {
+  box-sizing: border-box;
+  cursor: pointer;
+  outline: none;
+  font-weight: $weight-bold;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  text-align: left;
+  border: 3px solid $color-black;
+  color: $color-black;
+  text-align: center;
+  min-height: 2rem;
+  min-width: 2rem;
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  line-height: 1;
+
+  &.disabled {
+    color: $color-grey-light;
+    border-color: $color-grey-light;
+  }
+
+  &:hover {
+    outline: none;
+  }
+
+  @media (min-width: 769px) {
+    &:hover {
+      background-color: $color-black;
+      color: $color-white;
+    }
+
+    &:active {
+      background-color: #cbcbcb;
+    }
+  }
+}
+
+.button-disable,
+.button-clear {
+  width: 100%;
+  display: block;
+}
+
+button,
+.button {
+  svg {
+    fill: currentColor;
+  }
+}
+
+.button-github {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 1rem;
+  @media (max-width: 768px) {
+    display: none;
+    .menu-visible & {
+      display: flex;
+    }
+  }
+  svg {
+    width: 0.75rem;
+  }
+}
+
+h1 {
+  font-size: math.div(24, 25) * 1rem;
+  line-height: math.div(28, 25) * 1rem;
+  font-weight: $weight-bold;
+  margin: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding-bottom: 1rem;
+  pointer-events: none;
+  &:after {
+    content: '';
+    width: math.div(19, 25) * 1rem;
+    height: math.div(19, 25) * 1rem;
+    display: inline-block;
+    background: $color-primary;
+    border: 3px solid $color-black;
+    border-radius: 100%;
+    float: right;
+    box-shadow: inset 0 0 0 5px white;
+  }
+  @media (min-width: 769px) {
+    font-size: math.div(35, 25) * 1rem;
+    line-height: 1rem;
+    margin-left: math.div(-3, 25) * 1rem;
+  }
+}
+
+p {
+  margin: 0;
+  margin-top: 1rem;
+  line-height: 1rem;
+  font-weight: 400;
+}
+
+.range {
+  width: 100%;
+  display: block;
+}
+
+label,
+button,
+.button {
+  text-transform: uppercase;
+  font-weight: $weight-bold;
+  font-size: math.div(12, 25) * 1rem;
+}
+
+label {
+  display: block;
+  line-height: 1rem;
+  min-height: 1rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-1,
+.flex-auto {
+  &:first-child {
+    padding-right: 1rem;
+  }
+  &:last-child {
+    padding-left: 1rem;
+  }
+}
+
+.flex-1 {
+  flex: 1 1;
+}
+
+.content__header {
+  @media (max-width: 768px) {
+    position: relative;
+    z-index: 100;
+    padding: 1rem 1rem 0;
+  }
+}
+
+.content__aside {
+  p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    padding-top: math.div(22, 25) * 1rem;
+    border-top: 3px solid;
+    text-align: justify;
+  }
+  @media (max-width: 768px) {
+    padding: 0 1rem;
+    position: relative;
+    z-index: 100;
+    display: none;
+    .menu-visible & {
+      display: block;
+    }
+  }
+}
+
+.content__bottom {
+  @media (max-width: 768px) {
+    padding: 1rem;
+    z-index: 100;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}
+
+main {
+  @media (min-width: 769px) {
+    padding: math.div(22, 25) * 1rem;
+    z-index: 50;
+    margin-top: 0;
+    width: 10rem;
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    border: 3px solid $color-black;
+  }
+}
+
+.slider {
+  margin-bottom: 1rem;
+  cursor: pointer;
+  label {
+    flex: 0 0 6rem;
+  }
+}
+
+#canvas_container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+.lazy-canvas {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+
+#canvas_debug {
+  width: 12rem;
+  height: 12rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  display: none;
+  @media (min-width: 769px) {
+    display: block;
+  }
+}
+
+#canvas_interface {
+  z-index: 15;
+}
+
+#canvas_grid {
+  z-index: 14;
+}
+
+#canvas_temp {
+  z-index: 12;
+}
+
+#canvas_drawing {
+  z-index: 10;
+}
+
+.canvas-container {
+  z-index: 10;
+  @media (max-width: 768px) {
+    .menu-visible & {
+      opacity: 0.1;
+    }
+  }
+}
+
+.hidden-desktop {
+  @media (min-width: 769px) {
+    display: none;
+  }
+}
