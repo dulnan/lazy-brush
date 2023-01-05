@@ -10,6 +10,7 @@ interface LazyBrushOptions {
 
 interface LazyBrushUpdateOptions {
   both?: boolean
+  damping?: number
 }
 
 class LazyBrush {
@@ -149,16 +150,20 @@ class LazyBrush {
    */
   update(
     newPointerPoint: Point,
-    { both = false }: LazyBrushUpdateOptions = {}
+    options: LazyBrushUpdateOptions = {}
   ): boolean {
     this._hasMoved = false
-    if (this.pointer.equalsTo(newPointerPoint) && !both) {
+    if (
+      this.pointer.equalsTo(newPointerPoint) &&
+      !options.both &&
+      !options.damping
+    ) {
       return false
     }
 
     this.pointer.update(newPointerPoint)
 
-    if (both) {
+    if (options.both) {
       this._hasMoved = true
       this.brush.update(newPointerPoint)
       return true
@@ -168,8 +173,14 @@ class LazyBrush {
       this.distance = this.pointer.getDistanceTo(this.brush)
       this.angle = this.pointer.getAngleTo(this.brush)
 
-      if (this.distance > this.radius) {
-        this.brush.moveByAngle(this.angle, this.distance - this.radius)
+      const isOutside = Math.round((this.distance - this.radius) * 10) / 10 > 0
+
+      if (isOutside) {
+        this.brush.moveByAngle(
+          this.angle,
+          this.distance - this.radius,
+          options.damping
+        )
         this._hasMoved = true
       }
     } else {

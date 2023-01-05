@@ -4,6 +4,7 @@ import { Catenary } from 'catenary-curve'
 
 const LAZY_RADIUS = 60
 const BRUSH_RADIUS = 12.5
+const DAMPING = 90
 
 const styleVariables = {
   colorPrimary: '#f2530b',
@@ -15,59 +16,6 @@ function midPointBtw(p1: Point, p2: Point) {
   return {
     x: p1.x + (p2.x - p1.x) / 2,
     y: p1.y + (p2.y - p1.y) / 2
-  }
-}
-
-class Ball {
-  position: Point
-  velocity: Point
-  acceleration: Point
-  damping: number
-  mass: number
-  ropeLength: number
-
-  constructor() {
-    this.position = { x: 0, y: 0 } // initialize position to (0, 0)
-    this.velocity = { x: 0, y: 0 } // initialize velocity to (0, 0)
-    this.acceleration = { x: 0, y: 0 } // initialize acceleration to (0, 0)
-    this.damping = 0.9 // damping factor to apply to velocity each frame
-    this.mass = 10000 // mass of the ball
-    this.ropeLength = 100 // length of the rope in pixels
-  }
-
-  updatePosition(point: Point) {
-    // Calculate the distance between the ball and the point
-    const distance = Math.sqrt(
-      Math.pow(point.x - this.position.x, 2) +
-        Math.pow(point.y - this.position.y, 2)
-    )
-
-    if (distance > this.ropeLength) {
-      // Calculate the spring force pulling the ball towards the point
-      const springForce = (distance - this.ropeLength) * 0.1
-
-      // Calculate the acceleration caused by the spring force
-      this.acceleration.x =
-        (springForce * (point.x - this.position.x)) / distance
-      this.acceleration.y =
-        (springForce * (point.y - this.position.y)) / distance
-    } else {
-      // Set acceleration to 0 if distance is less than rope length
-      this.acceleration.x = 0
-      this.acceleration.y = 0
-    }
-
-    // Update velocity based on acceleration
-    this.velocity.x = this.velocity.x + this.acceleration.x
-    this.velocity.y = this.velocity.y + this.acceleration.y
-
-    // Apply damping to velocity
-    this.velocity.x = this.velocity.x * this.damping
-    this.velocity.y = this.velocity.y * this.damping
-
-    // Update position based on velocity
-    this.position.x = this.position.x + this.velocity.x
-    this.position.y = this.position.y + this.velocity.y
   }
 }
 
@@ -83,6 +31,7 @@ interface SceneOptions {
   slider: {
     brush: string
     lazy: string
+    damping: string
   }
   button: {
     lazy: string
@@ -102,6 +51,7 @@ export default class Scene {
   slider: {
     brush: HTMLInputElement
     lazy: HTMLInputElement
+    damping: HTMLInputElement
   }
   canvas: {
     interface: HTMLCanvasElement
@@ -124,12 +74,11 @@ export default class Scene {
   isPressing: boolean
   brushRadius: number
   chainLength: number
+  damping: number
   dpi: number
 
   x: number
   y: number
-
-  ball: Ball
 
   constructor(options: SceneOptions) {
     this.sidebar = document.getElementById(options.sidebar)!
@@ -160,7 +109,6 @@ export default class Scene {
     })
 
     this.catenary = new Catenary()
-    this.ball = new Ball()
 
     this.lazy = new LazyBrush({
       radius: LAZY_RADIUS,
@@ -182,6 +130,7 @@ export default class Scene {
 
     this.brushRadius = BRUSH_RADIUS
     this.chainLength = LAZY_RADIUS
+    this.damping = DAMPING
 
     this.dpi = 1
   }
@@ -226,10 +175,14 @@ export default class Scene {
       this.handleSliderBrush(e)
     )
     this.slider.lazy.addEventListener('input', (e) => this.handleSliderLazy(e))
+    this.slider.damping.addEventListener('input', (e) =>
+      this.handleSliderDamping(e)
+    )
 
     // Set initial value for range sliders
-    this.slider.brush.value = BRUSH_RADIUS.toString()
-    this.slider.lazy.value = LAZY_RADIUS.toString()
+    this.slider.brush.value = this.brushRadius.toString()
+    this.slider.lazy.value = this.chainLength.toString()
+    this.slider.damping.value = this.damping.toString()
 
     const observeCanvas = new ResizeObserver((entries, observer) =>
       this.handleCanvasResize(entries, observer)
@@ -258,8 +211,6 @@ export default class Scene {
       this.y = this.lazy.pointer.y
       this.mouseHasMoved = true
       this.valuesChanged = true
-      this.ball.position.x = this.x
-      this.ball.position.y = this.y
       this.clearCanvas()
     }, 100)
   }
@@ -346,6 +297,12 @@ export default class Scene {
     this.brushRadius = val
   }
 
+  handleSliderDamping(e) {
+    const val = parseInt(e.target.value)
+    this.valuesChanged = true
+    this.damping = val
+  }
+
   handleSliderLazy(e) {
     this.valuesChanged = true
     const val = parseInt(e.target.value)
@@ -412,7 +369,7 @@ export default class Scene {
     const pointer = this.lazy.getPointerCoordinates()
     const brush = this.lazy.getBrushCoordinates()
 
-    this.drawInterface(this.context.interface, this.ball.position)
+    this.drawInterface(this.context.interface, this.lazy.getBrushCoordinates())
     this.updateLazyBrush()
     this.mouseHasMoved = false
     this.valuesChanged = false
@@ -425,12 +382,12 @@ export default class Scene {
   }
 
   updateLazyBrush() {
-    const hasChanged = this.lazy.update({ x: this.x, y: this.y })
+    const hasChanged = this.lazy.update(
+      { x: this.x, y: this.y },
+      { damping: this.damping / 100 }
+    )
     const isDisabled = !this.lazy.isEnabled()
     const hasMoved = this.lazy.brushHasMoved()
-    this.ball.updatePosition(this.lazy.getBrushCoordinates())
-
-    // console.log({ hasChanged, hasMoved })
 
     if (!hasMoved) {
       // return
@@ -444,9 +401,8 @@ export default class Scene {
       (this.isPressing && !this.isDrawing) ||
       (isDisabled && this.isPressing)
     ) {
-      console.log('YES')
       this.isDrawing = true
-      this.points.push(this.ball.position)
+      this.points.push(this.lazy.getBrushCoordinates())
     }
 
     if (this.isDrawing) {
@@ -457,8 +413,7 @@ export default class Scene {
         this.context.temp.canvas.height
       )
       this.context.temp.lineWidth = this.brushRadius * 2
-      this.points.push(this.ball.position)
-      console.log(this.ball.position)
+      this.points.push(this.lazy.getBrushCoordinates())
 
       var p1 = this.points[0]
       var p2 = this.points[1]

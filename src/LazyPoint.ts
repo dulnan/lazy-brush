@@ -28,13 +28,23 @@ export class LazyPoint implements Point {
     // The angle in radians
     angle: number,
     // How much the point should be moved
-    distance: number
+    distance: number,
+    // How much of the required distance the coordinates are moved. A value of
+    // 1 means the full distance is moved. A lower value reduces the distance
+    // and makes the brush more sluggish.
+    damping?: number
   ): LazyPoint {
     // Rotate the angle based on the browser coordinate system ([0,0] in the top left)
     const angleRotated = angle + Math.PI / 2
 
-    this.x = this.x + Math.sin(angleRotated) * distance
-    this.y = this.y - Math.cos(angleRotated) * distance
+    if (damping) {
+      this.x = this.x + Math.sin(angleRotated) * distance * damping
+      this.y = this.y - Math.cos(angleRotated) * distance * damping
+    } else {
+      this.x = this.x + Math.sin(angleRotated) * distance
+      this.y = this.y - Math.cos(angleRotated) * distance
+    }
+
     return this
   }
 

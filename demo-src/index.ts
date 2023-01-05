@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     slider: {
       brush: 'slider_brush',
-      lazy: 'slider_lazy'
+      lazy: 'slider_lazy',
+      damping: 'slider_damping'
     },
     button: {
       lazy: 'button_lazy',
