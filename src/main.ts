@@ -1,9 +1,5 @@
 import LazyBrush from './LazyBrush'
-import Point from './Point'
-import LazyPoint from './LazyPoint'
+import { LazyPoint } from './LazyPoint'
+import type { Point } from './LazyPoint'
 
-export {
-  LazyBrush,
-  Point,
-  LazyPoint
-}
+export { LazyBrush, Point, LazyPoint }

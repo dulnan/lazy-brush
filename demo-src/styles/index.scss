@@ -141,10 +141,11 @@ p {
 
 label,
 button,
+.label,
 .button {
   text-transform: uppercase;
   font-weight: $weight-bold;
-  font-size: math.div(12, 25) * 1rem;
+  font-size: math.div(14, 25) * 1rem;
 }
 
 label {
