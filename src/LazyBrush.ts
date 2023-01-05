@@ -1,5 +1,4 @@
-import LazyPoint from './LazyPoint'
-import Point from './Point'
+import { LazyPoint, Point } from './LazyPoint'
 
 const RADIUS_DEFAULT = 30
 
@@ -22,16 +21,19 @@ class LazyBrush {
   angle: number
   distance: number
 
+  velocity: LazyPoint
+
   /**
    * constructor
    */
-  constructor(options: LazyBrushOptions) {
+  constructor(options: LazyBrushOptions = {}) {
     const initialPoint = options.initialPoint || { x: 0, y: 0 }
     this.radius = options.radius || RADIUS_DEFAULT
     this._isEnabled = options.enabled === true ? true : false
 
     this.pointer = new LazyPoint(initialPoint.x, initialPoint.y)
     this.brush = new LazyPoint(initialPoint.x, initialPoint.y)
+    this.velocity = new LazyPoint(initialPoint.x, initialPoint.y)
 
     this.angle = 0
     this.distance = 0

@@ -1,5 +1,5 @@
 import LazyBrush from './../src/LazyBrush'
-import Point from './../src/Point'
+import { Point } from './../src/LazyPoint'
 import { Catenary } from 'catenary-curve'
 
 const LAZY_RADIUS = 60
@@ -15,6 +15,59 @@ function midPointBtw(p1: Point, p2: Point) {
   return {
     x: p1.x + (p2.x - p1.x) / 2,
     y: p1.y + (p2.y - p1.y) / 2
+  }
+}
+
+class Ball {
+  position: Point
+  velocity: Point
+  acceleration: Point
+  damping: number
+  mass: number
+  ropeLength: number
+
+  constructor() {
+    this.position = { x: 0, y: 0 } // initialize position to (0, 0)
+    this.velocity = { x: 0, y: 0 } // initialize velocity to (0, 0)
+    this.acceleration = { x: 0, y: 0 } // initialize acceleration to (0, 0)
+    this.damping = 0.9 // damping factor to apply to velocity each frame
+    this.mass = 10000 // mass of the ball
+    this.ropeLength = 100 // length of the rope in pixels
+  }
+
+  updatePosition(point: Point) {
+    // Calculate the distance between the ball and the point
+    const distance = Math.sqrt(
+      Math.pow(point.x - this.position.x, 2) +
+        Math.pow(point.y - this.position.y, 2)
+    )
+
+    if (distance > this.ropeLength) {
+      // Calculate the spring force pulling the ball towards the point
+      const springForce = (distance - this.ropeLength) * 0.1
+
+      // Calculate the acceleration caused by the spring force
+      this.acceleration.x =
+        (springForce * (point.x - this.position.x)) / distance
+      this.acceleration.y =
+        (springForce * (point.y - this.position.y)) / distance
+    } else {
+      // Set acceleration to 0 if distance is less than rope length
+      this.acceleration.x = 0
+      this.acceleration.y = 0
+    }
+
+    // Update velocity based on acceleration
+    this.velocity.x = this.velocity.x + this.acceleration.x
+    this.velocity.y = this.velocity.y + this.acceleration.y
+
+    // Apply damping to velocity
+    this.velocity.x = this.velocity.x * this.damping
+    this.velocity.y = this.velocity.y * this.damping
+
+    // Update position based on velocity
+    this.position.x = this.position.x + this.velocity.x
+    this.position.y = this.position.y + this.velocity.y
   }
 }
 
@@ -73,9 +126,17 @@ export default class Scene {
   chainLength: number
   dpi: number
 
+  x: number
+  y: number
+
+  ball: Ball
+
   constructor(options: SceneOptions) {
     this.sidebar = document.getElementById(options.sidebar)!
     this.canvasContainer = document.getElementById(options.canvasContainer)!
+
+    this.x = 0
+    this.y = 0
 
     this.button = Object.keys(options.button).reduce((acc, b) => {
       acc[b] = document.getElementById(options.button[b])
@@ -99,6 +160,7 @@ export default class Scene {
     })
 
     this.catenary = new Catenary()
+    this.ball = new Ball()
 
     this.lazy = new LazyBrush({
       radius: LAZY_RADIUS,
@@ -192,16 +254,19 @@ export default class Scene {
         { x: initX + this.chainLength / 4, y: initY },
         { both: false }
       )
+      this.x = this.lazy.pointer.x
+      this.y = this.lazy.pointer.y
       this.mouseHasMoved = true
       this.valuesChanged = true
+      this.ball.position.x = this.x
+      this.ball.position.y = this.y
       this.clearCanvas()
     }, 100)
   }
 
   handleTouchStart(e) {
-    const x = e.changedTouches[0].clientX
-    const y = e.changedTouches[0].clientY
-    this.lazy.update({ x: x, y: y }, { both: true })
+    this.x = e.changedTouches[0].clientX
+    this.y = e.changedTouches[0].clientY
     this.handlePointerDown(e)
 
     this.mouseHasMoved = true
@@ -322,23 +387,69 @@ export default class Scene {
     this.context.temp.clearRect(0, 0, width, height)
   }
 
-  handlePointerMove(x, y) {
-    const hasChanged = this.lazy.update({ x: x, y: y })
+  handlePointerMove(x: number, y: number) {
+    this.x = x
+    this.y = y
+  }
+
+  clearCanvas() {
+    this.valuesChanged = true
+    this.context.drawing.clearRect(
+      0,
+      0,
+      this.canvas.drawing.width,
+      this.canvas.drawing.height
+    )
+    this.context.temp.clearRect(
+      0,
+      0,
+      this.canvas.temp.width,
+      this.canvas.temp.height
+    )
+  }
+
+  loop({ once = false } = {}) {
+    const pointer = this.lazy.getPointerCoordinates()
+    const brush = this.lazy.getBrushCoordinates()
+
+    this.drawInterface(this.context.interface, this.ball.position)
+    this.updateLazyBrush()
+    this.mouseHasMoved = false
+    this.valuesChanged = false
+
+    if (!once) {
+      window.requestAnimationFrame(() => {
+        this.loop()
+      })
+    }
+  }
+
+  updateLazyBrush() {
+    const hasChanged = this.lazy.update({ x: this.x, y: this.y })
     const isDisabled = !this.lazy.isEnabled()
+    const hasMoved = this.lazy.brushHasMoved()
+    this.ball.updatePosition(this.lazy.getBrushCoordinates())
+
+    // console.log({ hasChanged, hasMoved })
+
+    if (!hasMoved) {
+      // return
+    }
 
     this.context.temp.lineJoin = 'round'
     this.context.temp.lineCap = 'round'
     this.context.temp.strokeStyle = styleVariables.colorPrimary
 
     if (
-      (this.isPressing && hasChanged && !this.isDrawing) ||
+      (this.isPressing && !this.isDrawing) ||
       (isDisabled && this.isPressing)
     ) {
+      console.log('YES')
       this.isDrawing = true
-      this.points.push(this.lazy.brush.toObject())
+      this.points.push(this.ball.position)
     }
 
-    if (this.isDrawing && (this.lazy.brushHasMoved() || isDisabled)) {
+    if (this.isDrawing) {
       this.context.temp.clearRect(
         0,
         0,
@@ -346,7 +457,8 @@ export default class Scene {
         this.context.temp.canvas.height
       )
       this.context.temp.lineWidth = this.brushRadius * 2
-      this.points.push(this.lazy.brush.toObject())
+      this.points.push(this.ball.position)
+      console.log(this.ball.position)
 
       var p1 = this.points[0]
       var p2 = this.points[1]
@@ -370,39 +482,6 @@ export default class Scene {
     }
 
     this.mouseHasMoved = true
-  }
-
-  clearCanvas() {
-    this.valuesChanged = true
-    this.context.drawing.clearRect(
-      0,
-      0,
-      this.canvas.drawing.width,
-      this.canvas.drawing.height
-    )
-    this.context.temp.clearRect(
-      0,
-      0,
-      this.canvas.temp.width,
-      this.canvas.temp.height
-    )
-  }
-
-  loop({ once = false } = {}) {
-    if (this.mouseHasMoved || this.valuesChanged) {
-      const pointer = this.lazy.getPointerCoordinates()
-      const brush = this.lazy.getBrushCoordinates()
-
-      this.drawInterface(this.context.interface, pointer, brush)
-      this.mouseHasMoved = false
-      this.valuesChanged = false
-    }
-
-    if (!once) {
-      window.requestAnimationFrame(() => {
-        this.loop()
-      })
-    }
   }
 
   drawGrid(ctx) {
@@ -434,7 +513,7 @@ export default class Scene {
     ctx.stroke()
   }
 
-  drawInterface(ctx, pointer, brush) {
+  drawInterface(ctx: CanvasRenderingContext2D, brush: Point) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 
     // Draw brush point
@@ -446,7 +525,7 @@ export default class Scene {
     // Draw mouse point
     ctx.beginPath()
     ctx.fillStyle = styleVariables.colorBlack
-    ctx.arc(pointer.x, pointer.y, 4, 0, Math.PI * 2, true)
+    ctx.arc(this.x, this.y, 4, 0, Math.PI * 2, true)
     ctx.fill()
 
     //Draw catharina
@@ -459,7 +538,7 @@ export default class Scene {
       this.catenary.drawToCanvas(
         this.context.interface,
         brush,
-        pointer,
+        { x: this.x, y: this.y },
         this.chainLength
       )
       ctx.stroke()

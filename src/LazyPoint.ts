@@ -1,9 +1,9 @@
-interface Point {
+export interface Point {
   x: number
   y: number
 }
 
-export default class LazyPoint implements Point {
+export class LazyPoint implements Point {
   x: number
   y: number
 
