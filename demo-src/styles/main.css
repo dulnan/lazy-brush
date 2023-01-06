@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .h-canvas {
+    height: calc(100vh - (10 * 24px));
+  }
+}
+
+@layer components {
+  .canvas {
+    @apply absolute top-0 left-0 w-full h-full;
+  }
+
+  .range {
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      @apply w-3 h-3 rounded-full bg-orange-600;
+    }
+    &.disabled {
+      &::-webkit-slider-thumb {
+        @apply bg-gray-300;
+      }
+    }
+  }
+}

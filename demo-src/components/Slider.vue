@@ -1,9 +1,16 @@
 <template>
-  <div class="slider">
-    <label :for="id">{{ label }}</label>
-    <div>{{ value }}</div>
+  <div
+    class="mb-6 pt-[23px] border-t border-gray-400 border-dashed"
+    :class="{ 'text-gray-300 pointer-events-none': disabled }"
+  >
+    <div class="flex justify-between">
+      <label class="uppercase font-bold" :for="id">{{ label }}</label>
+      <div>{{ value }}</div>
+    </div>
+    <p class="my-6">{{ description }}</p>
     <input
-      class="range"
+      class="range block w-full h-6 bg-transparent border rounded-full border-gray-300 appearance-none cursor-pointer dark:bg-gray-700"
+      :class="{ disabled: disabled }"
       type="range"
       :id="'slider_' + id"
       :name="id"
@@ -25,6 +32,10 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  description: {
+    type: String,
+    default: ''
+  },
   min: {
     type: Number,
     default: 1
@@ -40,6 +51,10 @@ const props = defineProps({
   modelValue: {
     type: Number,
     default: 0
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
 })
 

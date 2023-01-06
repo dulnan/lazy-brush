@@ -1,54 +1,31 @@
 <template>
-  <main id="sidebar">
-    <div class="content">
-      <div class="content__header">
-        <h1>lazy-brush</h1>
-      </div>
-      <div class="content__aside">
-        <p>
-          Draw smooth curves and straight lines with your mouse, finger or any
-          pointing device.
-        </p>
+  <aside
+    class="md:w-72 relative z-50 bg-white border-t md:border-t-0 md:border-r md:h-screen border-gray-400 p-6 flex-shrink-0"
+  >
+    <h1
+      class="uppercase font-black text-2xl md:text-5xl md:-ml-0.5 leading-6 md:leading-[48px]"
+    >
+      lazy brush
+    </h1>
+    <p class="mt-6">
+      JavaScript library to draw smooth curves and straight lines with your
+      mouse, finger or any pointing device.
+    </p>
+    <ul class="flex justify-between mt-6">
+      <li v-for="(link, i) in links" :key="i">
+        <a
+          class="text-orange-600 font-bold uppercase underline underline-offset-4 hover:text-orange-800"
+          :href="link.href"
+          >{{ link.text }}</a
+        >
+      </li>
+    </ul>
 
-        <slot></slot>
-      </div>
-
-      <div class="flex content__bottom">
-        <div class="flex-auto">
-          <slot name="bottom"></slot>
-        </div>
-        <div class="flex-1">
-          <button
-            class="button-clear"
-            id="button_clear"
-            @click="$emit('clear')"
-          >
-            Clear
-          </button>
-        </div>
-
-        <div class="flex-auto">
-          <a
-            href="https://github.com/dulnan/lazy-brush"
-            class="button button-github"
-          >
-            <IconGithub />
-          </a>
-        </div>
-        <div class="flex-auto hidden-desktop">
-          <button class="button-menu" id="button_menu">
-            <IconMenu />
-          </button>
-        </div>
-      </div>
-    </div>
-  </main>
+    <slot></slot>
+  </aside>
 </template>
 
 <script lang="ts" setup>
-import IconGithub from './Icons/Github.vue'
-import IconMenu from './Icons/Menu.vue'
-
 defineEmits(['update:enabled', 'clear'])
 
 defineProps({
@@ -57,4 +34,19 @@ defineProps({
     default: false
   }
 })
+
+const links = [
+  {
+    href: 'https://github.com/dulnan/lazy-brush',
+    text: 'GitHub'
+  },
+  {
+    href: 'https://www.npmjs.com/package/lazy-brush',
+    text: 'npm'
+  },
+  {
+    href: 'https://www.reddit.com/r/javascript/comments/9paoyp/lazybrush_smooth_canvas_drawing_with_a_mouse_or',
+    text: 'Reddit'
+  }
+]
 </script>

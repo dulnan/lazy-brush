@@ -1,20 +1,18 @@
 <template>
-  <div class="canvas-container" id="canvas_container" ref="container">
+  <div class="relative z-10 w-full h-canvas md:h-screen" ref="container">
     <canvas
-      class="lazy-canvas"
-      id="canvas_interface"
+      class="canvas z-40"
       ref="canvasInterface"
-      @mousedown="onMouseDown"
-      @mouseup="onMouseUp"
-      @mousemove="onMouseMove"
+      @mousedown.prevent="onMouseDown"
+      @mouseup.prevent="onPointerUp"
+      @mousemove.prevent="onMouseMove"
+      @touchstart.prevent="onTouchStart"
+      @touchmove.prevent="onTouchMove"
+      @touchend.prevent="onTouchEnd"
     ></canvas>
-    <canvas
-      class="lazy-canvas"
-      id="canvas_drawing"
-      ref="canvasDrawing"
-    ></canvas>
-    <canvas class="lazy-canvas" id="canvas_temp" ref="canvasTemp"></canvas>
-    <canvas class="lazy-canvas" id="canvas_grid" ref="canvasGrid"></canvas>
+    <canvas class="canvas z-30" ref="canvasTemp"></canvas>
+    <canvas class="canvas z-20" ref="canvasDrawing"></canvas>
+    <canvas class="canvas z-10" ref="canvasGrid"></canvas>
   </div>
 </template>
 
@@ -43,14 +41,6 @@ const props = defineProps({
     type: Number,
     default: 90
   },
-  width: {
-    type: Number,
-    default: 1280
-  },
-  height: {
-    type: Number,
-    default: 768
-  },
   dpi: {
     type: Number,
     default: 1
@@ -65,8 +55,12 @@ const props = defineProps({
   }
 })
 
+const width = ref(1280)
+const height = ref(768)
+const dpi = ref(1)
+
 watch(
-  () => [props.height, props.width, props.clear],
+  () => [height.value, width.value, props.clear],
   () => {
     onDimensionsChange()
     clearCanvas()
@@ -96,10 +90,9 @@ watch(
 const isDrawing = ref(false)
 const isPressing = ref(false)
 const points: Point[] = []
-const x = ref(props.width / 2)
-const y = ref(props.height / 2)
+const x = ref(width.value / 2)
+const y = ref(height.value / 2)
 
-const mouseHasMoved = ref(false)
 const valuesChanged = ref(false)
 
 const container = ref(null as HTMLDivElement)
@@ -123,24 +116,50 @@ function onMouseDown() {
   isPressing.value = true
 }
 
-function onMouseUp() {
+function onPointerUp() {
   isDrawing.value = false
   isPressing.value = false
   points.length = 0
 
-  const dpi = window.innerWidth > 1024 ? 1 : window.devicePixelRatio
-  const width = canvasTemp.value.width / dpi
-  const height = canvasTemp.value.height / dpi
+  const dpi = width.value > 1024 ? 1 : window.devicePixelRatio
+  const w = canvasTemp.value.width / dpi
+  const h = canvasTemp.value.height / dpi
 
-  canvasDrawing.value
-    .getContext('2d')
-    .drawImage(canvasTemp.value, 0, 0, width, height)
-  canvasTemp.value.getContext('2d').clearRect(0, 0, width, height)
+  canvasDrawing.value.getContext('2d').drawImage(canvasTemp.value, 0, 0, w, h)
+  canvasTemp.value.getContext('2d').clearRect(0, 0, w, h)
+
+  // const rect = container.value.getBoundingClientRect()
+  // x.value = e.clientX - rect.left
+  // y.value = e.clientY - rect.top
+  // lazy.update({ x: x.value, y: y.value }, { both: true })
+}
+
+function handlePointerMove(newX: number, newY: number) {
+  const rect = container.value.getBoundingClientRect()
+  x.value = newX - rect.left
+  y.value = newY - rect.top
 }
 
 function onMouseMove(e: MouseEvent) {
-  x.value = e.clientX
-  y.value = e.clientY
+  handlePointerMove(e.clientX, e.clientY)
+}
+
+function onTouchStart(e: TouchEvent) {
+  handlePointerMove(e.changedTouches[0].clientX, e.changedTouches[0].clientY)
+  lazy.update({ x: x.value, y: y.value }, { both: true })
+  // x.value = e.changedTouches[0].clientX
+  // y.value = e.changedTouches[0].clientY
+  isPressing.value = true
+}
+
+function onTouchMove(e: TouchEvent) {
+  handlePointerMove(e.changedTouches[0].clientX, e.changedTouches[0].clientY)
+}
+
+function onTouchEnd() {
+  onPointerUp()
+  const brush = lazy.getBrushCoordinates()
+  lazy.update({ x: brush.x, y: brush.y }, { both: true })
 }
 
 function drawGrid() {
@@ -151,10 +170,10 @@ function drawGrid() {
   ctx.setLineDash([5, 1])
   ctx.setLineDash([])
   // ctx.strokeStyle = styleVariables.colorInterfaceGrid
-  ctx.strokeStyle = 'rgba(150,150,150,0.17)'
-  ctx.lineWidth = 0.5
+  ctx.strokeStyle = 'rgba(0,0,0,0.05)'
+  ctx.lineWidth = 1
 
-  const gridSize = 25
+  const gridSize = 24
 
   let countX = 0
   while (countX < ctx.canvas.width) {
@@ -193,10 +212,15 @@ function drawInterface() {
   //Draw catharina
   if (lazy.isEnabled()) {
     ctx.beginPath()
-    ctx.lineWidth = 2
+    ctx.lineWidth = 1.5
     ctx.lineCap = 'round'
-    ctx.setLineDash([2, 4])
-    ctx.strokeStyle = styleVariables.colorCatenary
+
+    const pullOffset = Math.max(lazy.distance - lazy.radius, -0.1)
+
+    const stretchFactor = pullOffset / lazy.radius + 1
+    ctx.setLineDash([5 * stretchFactor, 5 * stretchFactor])
+    ctx.strokeStyle =
+      pullOffset > -0.1 ? styleVariables.colorCatenary : 'rgba(0,0,0,0.3)'
     catenary.drawToCanvas(
       ctx,
       brush,
@@ -215,23 +239,23 @@ function drawInterface() {
 
 function setCanvasSize(
   canvas: HTMLCanvasElement,
-  width: number,
-  height: number,
+  w: number,
+  h: number,
   maxDpi: number
 ) {
   const targetDpi = Math.min(props.dpi, maxDpi)
-  canvas.width = width * targetDpi
-  canvas.height = height * targetDpi
+  canvas.width = w * targetDpi
+  canvas.height = h * targetDpi
   canvas.style.width = width.toString()
   canvas.style.height = height.toString()
   canvas.getContext('2d').scale(targetDpi, targetDpi)
 }
 
 function onDimensionsChange() {
-  setCanvasSize(canvasGrid.value, props.width, props.height, 1.25)
-  setCanvasSize(canvasDrawing.value, props.width, props.height, 1)
-  setCanvasSize(canvasTemp.value, props.width, props.height, 1)
-  setCanvasSize(canvasInterface.value, props.width, props.height, 2)
+  setCanvasSize(canvasGrid.value, width.value, height.value, 4)
+  setCanvasSize(canvasDrawing.value, width.value, height.value, 1)
+  setCanvasSize(canvasTemp.value, width.value, height.value, 1)
+  setCanvasSize(canvasInterface.value, width.value, height.value, 2)
 
   drawGrid()
   // this.loop({ once: true })
@@ -255,7 +279,7 @@ function midPointBtw(p1: Point, p2: Point) {
 function updateLazyBrush() {
   const hasChanged = lazy.update(
     { x: x.value, y: y.value },
-    { damping: props.damping / 100 }
+    { damping: isDrawing.value ? props.damping / 100 : 1 }
   )
   const isDisabled = !lazy.isEnabled()
   const hasMoved = lazy.brushHasMoved()
@@ -302,8 +326,6 @@ function updateLazyBrush() {
     ctx.lineTo(p1.x, p1.y)
     ctx.stroke()
   }
-
-  mouseHasMoved.value = true
 }
 
 function clearCanvas() {
@@ -316,11 +338,30 @@ function clearCanvas() {
     .clearRect(0, 0, canvasTemp.value.width, canvasTemp.value.height)
 }
 
+let resizeTimeout: any = null
+
+function setSizes() {
+  width.value = container.value.clientWidth
+  height.value = container.value.clientHeight
+  dpi.value =
+    width.value > 1024
+      ? Math.min(window.devicePixelRatio, 4)
+      : window.devicePixelRatio
+}
+
 onBeforeUnmount(() => {
   cancelAnimationFrame(raf)
 })
 
 onMounted(() => {
+  setSizes()
+  const observeCanvas = new ResizeObserver((entries, observer) => {
+    clearTimeout(resizeTimeout)
+    resizeTimeout = setTimeout(() => {
+      setSizes()
+    }, 500)
+  })
+  observeCanvas.observe(container.value)
   onDimensionsChange()
   drawGrid()
   drawInterface()
