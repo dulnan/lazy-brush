@@ -23,6 +23,7 @@
   "scripts": {
     "dev": "vite -c ./vite.config-demo.ts",
     "build": "tsc && vite build",
+    "build:demo": "vite -c ./vite.config-demo.ts build",
     "preview": "vite preview"
   },
   "author": "Jan Hug <me@dulnan.net>",

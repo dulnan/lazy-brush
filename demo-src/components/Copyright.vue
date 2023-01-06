@@ -1,5 +1,5 @@
 <template>
-  <div class="border-t border-gray-400 border-dashed pt-[23px]">
+  <div class="border-t border-gray-300 pt-[23px] px-6">
     Created by
     <a
       href="https://dulnan.net"

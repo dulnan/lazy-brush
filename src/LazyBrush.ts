@@ -10,7 +10,7 @@ interface LazyBrushOptions {
 
 interface LazyBrushUpdateOptions {
   both?: boolean
-  damping?: number
+  friction?: number
 }
 
 class LazyBrush {
@@ -156,7 +156,7 @@ class LazyBrush {
     if (
       this.pointer.equalsTo(newPointerPoint) &&
       !options.both &&
-      !options.damping
+      !options.friction
     ) {
       return false
     }
@@ -174,12 +174,16 @@ class LazyBrush {
       this.angle = this.pointer.getAngleTo(this.brush)
 
       const isOutside = Math.round((this.distance - this.radius) * 10) / 10 > 0
+      const friction =
+        options.friction && options.friction < 1
+          ? Math.min(Math.max(options.friction, 0.01), 1)
+          : undefined
 
       if (isOutside) {
         this.brush.moveByAngle(
           this.angle,
           this.distance - this.radius,
-          options.damping
+          friction
         )
         this._hasMoved = true
       }

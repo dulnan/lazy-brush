@@ -1,15 +1,18 @@
 <template>
   <div
-    class="mb-6 pt-[23px] border-t border-gray-400 border-dashed"
+    class="pt-[23px] pb-6 px-6 border-t border-gray-300 relative group hover:border-solid hover:bg-gray-50"
     :class="{ 'text-gray-300 pointer-events-none': disabled }"
   >
     <div class="flex justify-between">
       <label class="uppercase font-bold" :for="id">{{ label }}</label>
       <div>{{ value }}</div>
     </div>
-    <p class="my-6">{{ description }}</p>
+    <p class="text-xs mt-3 mb-3 text-gray-800">
+      {{ description }}
+    </p>
+
     <input
-      class="range block w-full h-6 bg-transparent border rounded-full border-gray-300 appearance-none cursor-pointer dark:bg-gray-700"
+      class="slider"
       :class="{ disabled: disabled }"
       type="range"
       :id="'slider_' + id"
@@ -86,3 +89,5 @@ function onWheel(e: WheelEvent) {
   }
 }
 </script>
+
+<style lang="postcss"></style>

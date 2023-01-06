@@ -6,11 +6,17 @@
   .h-canvas {
     height: calc(100vh - (10 * 24px));
   }
+  .image-rendering-pixelated {
+    image-rendering: pixelated;
+  }
 }
 
 @layer components {
   .canvas {
     @apply absolute top-0 left-0 w-full h-full;
+  }
+  .slider {
+    @apply range block w-full h-6 bg-white border px-1.5 rounded-full border-gray-300 appearance-none cursor-pointer dark:bg-gray-700;
   }
 
   .range {

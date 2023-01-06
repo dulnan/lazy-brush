@@ -3,6 +3,10 @@ export interface Point {
   y: number
 }
 
+function ease(x: number): number {
+  return 1 - Math.sqrt(1 - Math.pow(x, 2))
+}
+
 export class LazyPoint implements Point {
   x: number
   y: number
@@ -32,14 +36,14 @@ export class LazyPoint implements Point {
     // How much of the required distance the coordinates are moved. A value of
     // 1 means the full distance is moved. A lower value reduces the distance
     // and makes the brush more sluggish.
-    damping?: number
+    friction?: number
   ): LazyPoint {
     // Rotate the angle based on the browser coordinate system ([0,0] in the top left)
     const angleRotated = angle + Math.PI / 2
 
-    if (damping) {
-      this.x = this.x + Math.sin(angleRotated) * distance * damping
-      this.y = this.y - Math.cos(angleRotated) * distance * damping
+    if (friction) {
+      this.x = this.x + Math.sin(angleRotated) * distance * ease(friction)
+      this.y = this.y - Math.cos(angleRotated) * distance * ease(friction)
     } else {
       this.x = this.x + Math.sin(angleRotated) * distance
       this.y = this.y - Math.cos(angleRotated) * distance
