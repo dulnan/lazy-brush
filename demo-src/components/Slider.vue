@@ -58,6 +58,10 @@ const props = defineProps({
     type: Number,
     default: 0
   },
+  valueText: {
+    type: String,
+    default: ''
+  },
   disabled: {
     type: Boolean,
     default: false
@@ -69,7 +73,7 @@ const step = computed(() => {
 })
 
 const value = computed(() => {
-  return Math.round(props.modelValue).toString()
+  return props.valueText || Math.round(props.modelValue).toString()
 })
 
 function getSliderValue(e: Event) {

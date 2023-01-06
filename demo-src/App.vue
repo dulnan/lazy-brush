@@ -18,10 +18,11 @@
       <Slider
         v-model="friction"
         label="Friction"
+        :value-text="frictionValueText"
         id="friction"
-        description="Makes the brush lag behind the cursor. 100 = no lag, 1 = extreme lag."
-        :min="1"
-        :max="100"
+        description="Makes the brush lag behind the cursor. 0 = no lag, 1 = infinite lag."
+        :min="0"
+        :max="99"
         :disabled="!enabled"
       />
       <Slider
@@ -55,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import Sidebar from './components/Sidebar.vue'
 import Scene from './components/Scene.vue'
 import Slider from './components/Slider.vue'
@@ -64,9 +65,13 @@ import Toggle from './components/Toggle.vue'
 
 const brushRadius = ref(12.5)
 const lazyRadius = ref(60)
-const friction = ref(90)
+const friction = ref(10)
 const enabled = ref(true)
 const clear = ref(0)
+
+const frictionValueText = computed(() => {
+  return (friction.value / 100).toFixed(2)
+})
 
 const container = ref(null as HTMLDivElement)
 </script>

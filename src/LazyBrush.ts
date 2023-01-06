@@ -9,23 +9,62 @@ interface LazyBrushOptions {
 }
 
 interface LazyBrushUpdateOptions {
+  /**
+   * Update both pointer and brush at the same time.
+   *
+   * This can be used when supporting touch events: On touch start you would
+   * update both the pointer and the brush so that the pointer can be "moved"
+   * away from the brush until the lazy radius is reached.
+   */
   both?: boolean
+
+  /**
+   * Define the friction (value between 0 and 1) for the brush.
+   *
+   * A value of 0 means "no friction" (default when not set). A value of "1"
+   * means infinite friction (the brush won't move at all).
+   */
   friction?: number
 }
 
 class LazyBrush {
+  /**
+   * If the lazy brush should be enabled.
+   */
   _isEnabled: boolean
-  _hasMoved: boolean
-  radius: number
-  pointer: LazyPoint
-  brush: LazyPoint
-  angle: number
-  distance: number
-
-  velocity: LazyPoint
 
   /**
-   * constructor
+   * Indicates if the brush has moved in the last update cycle.
+   */
+  _hasMoved: boolean
+
+  /**
+   * The lazy radius.
+   */
+  radius: number
+
+  /**
+   * Coordinates of the pointer.
+   */
+  pointer: LazyPoint
+
+  /**
+   * Coordinates of the brush.
+   */
+  brush: LazyPoint
+
+  /**
+   * The angle between pointer and brush in the last update cycle.
+   */
+  angle: number
+
+  /**
+   * The distance between pointer and brush in the last update cycle.
+   */
+  distance: number
+
+  /**
+   * Constructs a new LazyBrush.
    */
   constructor(options: LazyBrushOptions = {}) {
     const initialPoint = options.initialPoint || { x: 0, y: 0 }
@@ -34,7 +73,6 @@ class LazyBrush {
 
     this.pointer = new LazyPoint(initialPoint.x, initialPoint.y)
     this.brush = new LazyPoint(initialPoint.x, initialPoint.y)
-    this.velocity = new LazyPoint(initialPoint.x, initialPoint.y)
 
     this.angle = 0
     this.distance = 0
@@ -175,8 +213,8 @@ class LazyBrush {
 
       const isOutside = Math.round((this.distance - this.radius) * 10) / 10 > 0
       const friction =
-        options.friction && options.friction < 1
-          ? Math.min(Math.max(options.friction, 0.01), 1)
+        options.friction && options.friction < 1 && options.friction > 0
+          ? options.friction
           : undefined
 
       if (isOutside) {

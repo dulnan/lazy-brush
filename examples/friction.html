@@ -43,6 +43,9 @@
 
       function loop() {
         // Update the current mouse coordinates.
+        // When using friction we have to continously call the update method
+        // because the brush can move even if the cursor position remains the
+        // same.
         lazy.update({ x, y }, { friction: 0.5 })
 
         // Get the updated brush coordinates.

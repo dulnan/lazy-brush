@@ -42,8 +42,8 @@ export class LazyPoint implements Point {
     const angleRotated = angle + Math.PI / 2
 
     if (friction) {
-      this.x = this.x + Math.sin(angleRotated) * distance * ease(friction)
-      this.y = this.y - Math.cos(angleRotated) * distance * ease(friction)
+      this.x = this.x + Math.sin(angleRotated) * distance * ease(1 - friction)
+      this.y = this.y - Math.cos(angleRotated) * distance * ease(1 - friction)
     } else {
       this.x = this.x + Math.sin(angleRotated) * distance
       this.y = this.y - Math.cos(angleRotated) * distance

@@ -33,6 +33,9 @@
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
 
+      // While not always reccommended, we can directly draw in your event
+      // handler here. Generally it is better to do that in an animation loop.
+      // See the "friction.html" example on how to do that.
       canvas.addEventListener('mousemove', function (e) {
         const x = e.clientX
         const y = e.clientY
