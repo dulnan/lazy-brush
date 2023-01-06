@@ -9,7 +9,7 @@ It takes a radius and the {x,y} coordinates of a mouse/pointer and calculates
 the position of the brush.
 The brush will only move when the pointer is outside the "lazy area" of the
 brush. With this technique it's possible to freely draw smooth lines and curves
-with just a pointer or finger.
+with just a mouse or finger.
 
 # How it works
 When the position of the pointer is updated, the distance to the brush is
@@ -49,6 +49,8 @@ properties.
 
 The functions `getBrush()` and `getPointer()` will return a `LazyPoint`, which
 has some functions like getDistanceTo, getAngleTo or equalsTo.
+
+# Example
 
 ## Performance
 For performance reasons it's best to decouple calculations and canvas rendering

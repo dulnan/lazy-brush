@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Basic Example</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      canvas {
+        display: block;
+        cursor: crosshair;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="canvas" width="1024" height="768"></canvas>
+    </div>
+
+    <script src="./../lib/lazy-brush.umd.cjs"></script>
+    <script>
+      // The lazy radius.
+      const LAZY_RADIUS = 60
+      const BRUSH_RADIUS = 30
+
+      // Create new LazyBrush instance.
+      const lazy = new window['lazy-brush'].LazyBrush({
+        enabled: true,
+        radius: LAZY_RADIUS
+      })
+      const canvas = document.getElementById('canvas')
+
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+
+      canvas.addEventListener('mousemove', function (e) {
+        const x = e.clientX
+        const y = e.clientY
+        lazy.update({ x, y })
+
+        const brushHasMoved = lazy.brushHasMoved()
+
+        // We only need to update the canvas if the brush has moved.
+        if (brushHasMoved) {
+          // Get the updated brush coordinates.
+          const brush = lazy.getBrushCoordinates()
+
+          // Draw the canvas.
+          const ctx = canvas.getContext('2d')
+
+          // Clear entire canvaas.
+          ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+          // Draw brush point
+          ctx.beginPath()
+          ctx.fillStyle = 'red'
+          ctx.arc(brush.x, brush.y, BRUSH_RADIUS, 0, Math.PI * 2, true)
+          ctx.fill()
+
+          // Draw the lazy radius.
+          ctx.beginPath()
+          ctx.strokeStyle = '#ccc'
+          ctx.arc(brush.x, brush.y, LAZY_RADIUS, 0, Math.PI * 2, true)
+          ctx.stroke()
+        }
+      })
+    </script>
+  </body>
+</html>
