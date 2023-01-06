@@ -7,7 +7,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Space Mono']
+        sans: ['Space Mono', 'Monaco', 'monospace']
       }
     },
   },

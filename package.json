@@ -2,9 +2,18 @@
   "name": "lazy-brush",
   "version": "1.0.1",
   "description": "Lazy brush - smooth drawing using mouse or finger",
-  "main": "dist/lazybrush.cjs.js",
-  "module": "dist/lazybrush.esm.js",
-  "browser": "dist/lazybrush.umd.js",
+  "type": "module",
+  "files": [
+    "lib"
+  ],
+  "main": "./lib/lazy-brush.umd.cjs",
+  "module": "./lib/lazy-brush.js",
+  "exports": {
+    ".": {
+      "import": "./lib/lazy-brush.js",
+      "require": "./lib/lazy-brush.umd.cjs"
+    }
+  },
   "keywords": [
     "brush",
     "mouse",
@@ -23,8 +32,8 @@
   "scripts": {
     "dev": "vite -c ./vite.config-demo.ts",
     "build": "tsc && vite build",
-    "build:demo": "vite -c ./vite.config-demo.ts build",
-    "preview": "vite preview"
+    "build:demo": "vite-ssg -c ./vite.config-demo.ts build",
+    "preview": "vite -c ./vite.config-demo.ts preview"
   },
   "author": "Jan Hug <me@dulnan.net>",
   "license": "MIT",
@@ -40,6 +49,7 @@
     "typescript": "^4.9.3",
     "vite": "^4.0.0",
     "vite-plugin-dts": "^1.7.1",
+    "vite-ssg": "^0.22.1",
     "vue-tsc": "^1.0.22"
   }
 }

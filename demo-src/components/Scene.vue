@@ -1,5 +1,5 @@
 <template>
-  <div class="relative z-10 w-full h-canvas md:h-screen" ref="container">
+  <div class="relative z-10 w-full h-canvas md:h-full" ref="container">
     <canvas
       class="canvas z-40"
       ref="canvasInterface"
@@ -139,7 +139,7 @@ function drawGrid() {
   const ctx = canvasGrid.value.getContext('2d')
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 
-  ctx.strokeStyle = 'rgb(209, 213, 219)'
+  ctx.strokeStyle = 'rgb(214, 211, 209)'
   ctx.lineWidth = dpi.value
 
   ctx.beginPath()
