@@ -17,8 +17,9 @@
       <canvas id="canvas" width="1024" height="768"></canvas>
     </div>
 
-    <script src="./../lib/lazy-brush.umd.cjs"></script>
-    <script>
+    <script type="module">
+      import { LazyBrush } from 'https://cdn.jsdelivr.net/npm/lazy-brush@2.0.0/lib/lazy-brush.js'
+
       // The lazy radius.
       const LAZY_RADIUS = 60
       const BRUSH_RADIUS = 30
@@ -27,7 +28,11 @@
       let y = 0
 
       // Create new LazyBrush instance.
-      const lazy = new window['lazy-brush'].LazyBrush({
+      const lazy = new LazyBrush({
+        enabled: true,
+        radius: LAZY_RADIUS
+      })
+      const lazyFriction = new LazyBrush({
         enabled: true,
         radius: LAZY_RADIUS
       })
@@ -46,10 +51,12 @@
         // When using friction we have to continously call the update method
         // because the brush can move even if the cursor position remains the
         // same.
-        lazy.update({ x, y }, { friction: 0.5 })
+        lazy.update({ x, y })
+        lazyFriction.update({ x, y }, { friction: 0.5 })
 
         // Get the updated brush coordinates.
         const brush = lazy.getBrushCoordinates()
+        const brushFriction = lazyFriction.getBrushCoordinates()
 
         // Draw the canvas.
         const ctx = canvas.getContext('2d')
@@ -60,7 +67,7 @@
         // Draw brush point
         ctx.beginPath()
         ctx.fillStyle = 'red'
-        ctx.arc(brush.x, brush.y, BRUSH_RADIUS, 0, Math.PI * 2, true)
+        ctx.arc(brushFriction.x, brushFriction.y, BRUSH_RADIUS, 0, Math.PI * 2, true)
         ctx.fill()
 
         // Draw the lazy radius.

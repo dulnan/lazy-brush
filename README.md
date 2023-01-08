@@ -2,7 +2,7 @@
 
 ![lazy-brush banner](public/og.png?raw=true "Lazy Brush in action")
 
-**[Demo drawing app](https://lazybrush.dulnan.net)**
+**[Demo](https://lazybrush.dulnan.net)** - **[NPM](https://npmjs.com/package/lazy-brush)** -- **[CodePen Examples](https://codepen.io/collection/wayKwv)**
 
 __The demo app also uses
 [catenary-curve](https://github.com/dulnan/catenary-curve) to draw the little
@@ -25,6 +25,10 @@ be moved by `distance - radius` pixels in the direction where the pointer is.
 ## Usage
 
 lazy-brush is on npm so you can install it with your favorite package manager.
+
+```bash
+npm install --save lazy-brush
+```
 
 lazy-brush can be easily added in any canvas drawing scenario. It acts like a
 "proxy" between user input and drawing.

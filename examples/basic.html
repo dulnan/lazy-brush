@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Basic Example</title>
+    <title>lazy-brush Basic Example</title>
     <style>
       body {
         margin: 0;
@@ -17,14 +17,15 @@
       <canvas id="canvas" width="1024" height="768"></canvas>
     </div>
 
-    <script src="./../lib/lazy-brush.umd.cjs"></script>
-    <script>
+    <script type="module">
+      import { LazyBrush } from 'https://cdn.jsdelivr.net/npm/lazy-brush@2.0.0/lib/lazy-brush.js'
+
       // The lazy radius.
       const LAZY_RADIUS = 60
       const BRUSH_RADIUS = 30
 
       // Create new LazyBrush instance.
-      const lazy = new window['lazy-brush'].LazyBrush({
+      const lazy = new LazyBrush({
         enabled: true,
         radius: LAZY_RADIUS
       })
