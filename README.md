@@ -1,5 +1,7 @@
 # lazy-brush - smooth drawing with a mouse, finger or any pointing device
 
+![lazy-brush banner](public/og.png?raw=true "Lazy Brush in action")
+
 **[Demo drawing app](https://lazybrush.dulnan.net)**
 
 __The demo app also uses

@@ -8,6 +8,7 @@ export default defineConfig({
       insertTypesEntry: true
     })
   ],
+  publicDir: false,
   build: {
     outDir: 'lib',
     lib: {

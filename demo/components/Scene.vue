@@ -21,7 +21,7 @@
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import LazyBrush from '../../src/LazyBrush'
 import { Point } from '../../src/LazyPoint'
-import { Catenary } from 'catenary-curve'
+import { getCatenaryCurve, drawResult } from 'catenary-curve'
 
 const DRAW_MAX_DPI = 2
 
@@ -81,8 +81,6 @@ const lazy = new LazyBrush({
     y: y.value
   }
 })
-
-const catenary = new Catenary()
 
 function onMouseDown() {
   isPressing.value = true
@@ -186,12 +184,12 @@ function drawInterface() {
     ctx.setLineDash([5 * stretchFactor, 5 * stretchFactor])
     ctx.strokeStyle =
       pullOffset > -0.1 ? styleVariables.colorCatenary : 'rgba(0,0,0,0.3)'
-    catenary.drawToCanvas(
-      ctx,
+    const result = getCatenaryCurve(
       brush,
       { x: x.value, y: y.value },
       props.lazyRadius
     )
+    drawResult(result, ctx)
     ctx.stroke()
   }
 

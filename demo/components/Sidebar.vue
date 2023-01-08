@@ -26,15 +26,6 @@
 </template>
 
 <script lang="ts" setup>
-defineEmits(['update:enabled', 'clear'])
-
-defineProps({
-  enabled: {
-    type: Boolean,
-    default: false
-  }
-})
-
 const links = [
   {
     href: 'https://github.com/dulnan/lazy-brush',

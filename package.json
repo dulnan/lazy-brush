@@ -1,6 +1,6 @@
 {
   "name": "lazy-brush",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Lazy brush - smooth drawing using mouse or finger",
   "type": "module",
   "files": [
@@ -8,6 +8,7 @@
   ],
   "main": "./lib/lazy-brush.umd.cjs",
   "module": "./lib/lazy-brush.js",
+  "types": "./lib/main.d.ts",
   "exports": {
     ".": {
       "import": "./lib/lazy-brush.js",
@@ -41,7 +42,7 @@
     "@types/node": "^18.11.18",
     "@vitejs/plugin-vue": "^4.0.0",
     "autoprefixer": "^10.4.13",
-    "catenary-curve": "^1.0.1",
+    "catenary-curve": "^2.0.0",
     "postcss": "^8.4.20",
     "prettier": "^2.8.1",
     "sass": "^1.57.1",
