@@ -69,7 +69,7 @@ class LazyBrush {
   constructor(options: LazyBrushOptions = {}) {
     const initialPoint = options.initialPoint || { x: 0, y: 0 }
     this.radius = options.radius || RADIUS_DEFAULT
-    this._isEnabled = options.enabled === true ? true : false
+    this._isEnabled = options.enabled === false ? false : true
 
     this.pointer = new LazyPoint(initialPoint.x, initialPoint.y)
     this.brush = new LazyPoint(initialPoint.x, initialPoint.y)

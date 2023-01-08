@@ -1,5 +1,6 @@
+import { describe, expect, it } from 'vitest'
 import chai from 'chai'
-import LazyPoint from '../src/LazyPoint'
+import { LazyPoint } from '../src/main'
 
 chai.should()
 
@@ -7,11 +8,11 @@ describe('LazyPoint', () => {
   it('Should be instantiatable with two coordinates', () => {
     const p = new LazyPoint(100, 50)
 
-    p.x.should.be.a('number')
-    p.x.should.equal(100)
+    expect(p.x).be.a('number')
+    expect(p.x).toBeCloseTo(100)
 
-    p.y.should.be.a('number')
-    p.y.should.equal(50)
+    expect(p.y).be.a('number')
+    expect(p.y).toBeCloseTo(50)
   })
 
   it('Should update coordinates correctly', () => {
@@ -21,8 +22,8 @@ describe('LazyPoint', () => {
 
     p.update(pNew)
 
-    p.x.should.equal(500)
-    p.y.should.equal(300)
+    expect(p.x).toBeCloseTo(500)
+    expect(p.y).toBeCloseTo(300)
   })
 
   it('Should move point by angle correctly', () => {
@@ -32,8 +33,8 @@ describe('LazyPoint', () => {
     const angle = Math.PI / 2
     p.moveByAngle(angle, 100)
 
-    p.x.should.equal(100)
-    p.y.should.equal(200)
+    expect(p.x).toBeCloseTo(100)
+    expect(p.y).toBeCloseTo(200)
   })
 
   it('Should compare equality to another point correctly', () => {
@@ -51,11 +52,11 @@ describe('LazyPoint', () => {
     const r4 = p.equalsTo(p4)
     const r5 = p.equalsTo(p5)
 
-    r1.should.equal(true)
-    r2.should.equal(false)
-    r3.should.equal(false)
-    r4.should.equal(false)
-    r5.should.equal(false)
+    expect(r1).equal(true)
+    expect(r2).equal(false)
+    expect(r3).equal(false)
+    expect(r4).equal(false)
+    expect(r5).equal(false)
   })
 
   it('Should calculate the difference between another point correctly', () => {
@@ -64,8 +65,8 @@ describe('LazyPoint', () => {
 
     const r = p1.getDifferenceTo(p2)
 
-    r.x.should.equal(0)
-    r.y.should.equal(-300)
+    expect(r.x).equal(0)
+    expect(r.y).equal(-300)
   })
 
   it('Should calculate the distance to another point correctly', () => {
@@ -74,7 +75,7 @@ describe('LazyPoint', () => {
 
     const r = p1.getDistanceTo(p2)
 
-    r.should.equal(300)
+    expect(r).equal(300)
   })
 
   it('Should calculate the angle to another point correctly', () => {
@@ -83,7 +84,7 @@ describe('LazyPoint', () => {
 
     const r = p1.getAngleTo(p2)
 
-    r.should.equal(Math.PI)
+    expect(r).equal(Math.PI)
   })
 
   it('Should return a coordinates object correctly', () => {
@@ -91,10 +92,8 @@ describe('LazyPoint', () => {
 
     const r = p.toObject()
 
-    r.should.be.a('object')
-    r.x.should.equal(511.5932)
-    r.y.should.equal(159.999994)
+    expect(r).be.a('object')
+    expect(r.x).equal(511.5932)
+    expect(r.y).equal(159.999994)
   })
-
-
 })
