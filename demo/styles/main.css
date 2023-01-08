@@ -4,7 +4,7 @@
 
 @layer utilities {
   .h-canvas {
-    height: calc(100vh - (10 * 24px));
+    height: calc(100vh - (13 * 24px));
   }
   .image-rendering-pixelated {
     image-rendering: pixelated;
@@ -20,9 +20,14 @@
   }
 
   .range {
+    background: transparent !important;
+    box-shadow: inset 0px 0px 0px 20px white;
+    &::-webkit-slider-runnable-track {
+      @apply bg-white;
+    }
     &::-webkit-slider-thumb {
       -webkit-appearance: none;
-      @apply w-3 h-3 rounded-full bg-orange-600;
+      @apply w-3 h-3 rounded-full bg-orange-600 shadow-none;
     }
     &.disabled {
       &::-webkit-slider-thumb {

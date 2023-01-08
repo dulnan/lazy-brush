@@ -1,5 +1,8 @@
 <template>
-  <div class="relative z-10 w-full h-canvas md:h-full" ref="container">
+  <div
+    class="relative z-10 w-full h-canvas md:h-full border-t border-stone-300 md:border-t-0"
+    ref="container"
+  >
     <canvas
       class="canvas z-40"
       ref="canvasInterface"

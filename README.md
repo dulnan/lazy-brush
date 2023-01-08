@@ -1,8 +1,8 @@
 # lazy-brush - smooth drawing with a mouse, finger or any pointing device
 
-![lazy-brush banner](public/og.png?raw=true "Lazy Brush in action")
+[![lazy-brush banner](public/og.png?raw=true "Lazy Brush in action")](https://lazybrush.dulnan.net)
 
-**[Demo](https://lazybrush.dulnan.net)** - **[NPM](https://npmjs.com/package/lazy-brush)** -- **[CodePen Examples](https://codepen.io/collection/wayKwv)**
+**[Demo](https://lazybrush.dulnan.net)** - **[NPM](https://npmjs.com/package/lazy-brush)** - **[CodePen Examples](https://codepen.io/collection/wayKwv)**
 
 __The demo app also uses
 [catenary-curve](https://github.com/dulnan/catenary-curve) to draw the little

@@ -1,6 +1,6 @@
 {
   "name": "lazy-brush",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Lazy brush - smooth drawing using mouse or finger",
   "type": "module",
   "files": [
@@ -31,7 +31,7 @@
     "lib": "lib"
   },
   "scripts": {
-    "dev": "vite -c ./vite.config-demo.ts",
+    "dev": "vite -c ./vite.config-demo.ts --host",
     "build": "tsc && vite build",
     "build:demo": "vite-ssg -c ./vite.config-demo.ts build",
     "preview": "vite -c ./vite.config-demo.ts preview",
