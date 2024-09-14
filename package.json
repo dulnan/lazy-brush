@@ -1,6 +1,6 @@
 {
   "name": "lazy-brush",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Lazy brush - smooth drawing using mouse or finger",
   "type": "module",
   "files": [
@@ -11,8 +11,14 @@
   "types": "./lib/main.d.ts",
   "exports": {
     ".": {
-      "import": "./lib/lazy-brush.js",
-      "require": "./lib/lazy-brush.umd.cjs"
+      "import": {
+        "default": "./lib/lazy-brush.js",
+        "types": "./lib/main.d.ts"
+      },
+      "require": {
+        "default": "./lib/lazy-brush.umd.cjs",
+        "types": "./lib/main.d.ts"
+      }
     }
   },
   "keywords": [
